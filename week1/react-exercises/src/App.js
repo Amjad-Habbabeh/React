@@ -3,9 +3,9 @@ import HobbyList from './components/ex1-Hobbies/HobbyList';
 import Guarantee from './components/ex2-customerService/Guarantee';
 import Counter from './components/ex3-counter/Counter';
 import './App.css';
-const src1 = './chat.png';
-const src2 = './coin.png';
-const src3 = './f-delivery.png';
+import src1 from './Imges/chat.png';
+import src2 from './Imges/coin.png';
+import src3 from './Imges/f-delivery.png';
 
 function App() {
   return (
