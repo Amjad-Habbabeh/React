@@ -3,9 +3,9 @@ import HobbyList from './components/ex1-Hobbies/HobbyList';
 import Guarantee from './components/ex2-customerService/Guarantee';
 import Counter from './components/ex3-counter/Counter';
 import './App.css';
-import src1 from './Imges/chat.png';
-import src2 from './Imges/coin.png';
-import src3 from './Imges/f-delivery.png';
+import chatImge from './Imges/chat.png';
+import coinImge from './Imges/coin.png';
+import deliveryImge from './Imges/f-delivery.png';
 
 function App() {
   return (
@@ -13,17 +13,17 @@ function App() {
       <HobbyList />
       <div className="services-section">
         <Guarantee
-          src={src3}
+          src={deliveryImge}
           title="Free Shipping"
           description="Mauris blandit aliquet elit, eget tincidunt nibh pulvinar a. Vivamus magna justo."
         />
         <Guarantee
-          src={src2}
+          src={coinImge}
           title="100% Money back"
           description="Mauris blandit aliquet elit, eget tincidunt nibh pulvinar a. Vivamus magna justo."
         />
         <Guarantee
-          src={src1}
+          src={chatImge}
           title="online support 24/7"
           description="Mauris blandit aliquet elit, eget tincidunt nibh pulvinar a. Vivamus magna justo."
         />
