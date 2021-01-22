@@ -7,7 +7,7 @@ const hobbyList = () => {
   return (
     <div className="list">
       <h1>Hobbies</h1>
-      <ul>{<Hobbies hobbies={hobbies} />}</ul>
+      {<Hobbies hobbies={hobbies} />}
     </div>
   );
 };

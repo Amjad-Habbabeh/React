@@ -4,11 +4,11 @@ import { v4 as uuidv4 } from 'uuid';
 
 function Hobbies({ hobbies }) {
   return (
-    <div>
+    <ul>
       {hobbies.map((hobby) => {
         return <Hobby hobby={hobby} key={uuidv4()} />;
       })}
-    </div>
+    </ul>
   );
 }
 export default Hobbies;
