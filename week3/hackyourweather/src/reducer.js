@@ -3,7 +3,7 @@ export const reducer = (state, action) => {
     case 'FETCH_DATA':
       return {
         ...state,
-        searchedCities: [...state.searchedCities, action.payload.data],
+        searchedCities: [action.payload.data, ...state.searchedCities],
         isLoading: action.payload.isLoading,
         search: action.payload.search,
         hasMessage: action.payload.hasMessage,
