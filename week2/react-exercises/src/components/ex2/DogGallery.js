@@ -21,7 +21,7 @@ const DogGallery = () => {
         return res.json();
       })
       .then((data) => {
-        setDogPhotos((prevPhotos) => [...prevPhotos, data.message]);
+        setDogPhotos([...dogPhotos, data.message]);
         setIsLoading(false);
       })
       .catch((err) => {
