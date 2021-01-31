@@ -15,7 +15,7 @@ const Friend = () => {
     fetch(url)
       .then((res) => {
         if (!res.ok) {
-          isLoading(false);
+          setIsLoading(false);
           throw new Error('Failed to fetch..');
         }
         return res.json();
