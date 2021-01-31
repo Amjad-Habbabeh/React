@@ -62,7 +62,7 @@ const Weather = () => {
       });
   };
 
-  const handlesearch = (e, value) => {
+  const handleSearch = (e, value) => {
     const url = `
   https://api.openweathermap.org/data/2.5/weather?q=${value}&appid=${Api_key}&units=metric `;
 
@@ -151,7 +151,7 @@ const Weather = () => {
             <Message message={state.message} closeMessage={closeMessage} />
           )}
           <Search
-            handleSearch={handlesearch}
+            handleSearch={handleSearch}
             cityName={cityName}
             setCityName={setCityName}
           />
