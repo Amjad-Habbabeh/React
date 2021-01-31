@@ -13,17 +13,18 @@ const RandomJoke = () => {
     fetch(url)
       .then((res) => {
         if (!res.ok) {
-          isLoading(false);
+          setIsLoading(false);
           throw new Error('Failed to fetch..');
         }
         return res.json();
       })
       .then((data) => {
         setJoke(data);
-        setIsLoading(false);
       })
       .catch((err) => {
         setHasError(true);
+      })
+      .finally(() => {
         setIsLoading(false);
       });
   };
