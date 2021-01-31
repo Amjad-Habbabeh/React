@@ -8,7 +8,7 @@ const defaultState = {
   isLoading: false,
   hasError: false,
   hasMessage: true,
-  message: `No city input yet, type in a city and click search!`,
+  message: ``,
   search: false,
   searchedCities: [],
 };
@@ -18,7 +18,6 @@ const Weather = () => {
   const Api_key = process.env.REACT_APP_OPENWEATHERMAP_API_KEY;
 
   const fetchData = (url) => {
-    console.log('sending http request...');
     dispatch({ type: 'LOADING', payload: true });
 
     fetch(url)
@@ -65,7 +64,7 @@ const Weather = () => {
 
   const handlesearch = (e, value) => {
     const url = `
-  https://api.openweathermap.org/data/2.5/weather?q=${value}&appid=${Api_key}&units	=metric `;
+  https://api.openweathermap.org/data/2.5/weather?q=${value}&appid=${Api_key}&units=metric `;
 
     e.preventDefault();
     dispatch({ type: 'LOADING', payload: true });
