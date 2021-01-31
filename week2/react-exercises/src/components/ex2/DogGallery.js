@@ -11,11 +11,10 @@ const DogGallery = () => {
   const [hasError, setHasError] = useState(false);
   const getDogPhoto = () => {
     setIsLoading(true);
-    console.log('sending http request...');
     fetch(url)
       .then((res) => {
         if (!res.ok) {
-          isLoading(false);
+          setIsLoading(false);
           throw new Error('Failed to fetch..');
         }
         return res.json();

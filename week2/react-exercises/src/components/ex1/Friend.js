@@ -11,7 +11,6 @@ const Friend = () => {
 
   const getFriend = () => {
     setIsLoading(true);
-    console.log('sending http request...');
     fetch(url)
       .then((res) => {
         if (!res.ok) {
