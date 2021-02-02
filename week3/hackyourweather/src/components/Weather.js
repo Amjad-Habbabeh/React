@@ -72,7 +72,7 @@ const Weather = () => {
     if (value) {
       if (state.searchedCities.length > 0) {
         const existCity = state.searchedCities.filter(
-          (city) => city.name.toUpperCase() == value.toUpperCase()
+          (city) => city.name.toUpperCase() === value.toUpperCase()
         );
         if (!existCity[0]) {
           fetchData(url);
@@ -156,7 +156,7 @@ const Weather = () => {
             setCityName={setCityName}
           />
 
-          {!state.search && state.searchedCities.length == 0 && (
+          {!state.search && state.searchedCities.length === 0 && (
             <Message
               message={`No city input yet, type in a city and click search!`}
               closeMessage={closeMessage}
