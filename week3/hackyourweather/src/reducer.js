@@ -7,7 +7,7 @@ export const reducer = (state, action) => {
         isLoading: action.payload.isLoading,
         search: action.payload.search,
         hasMessage: action.payload.hasMessage,
-        message: action.payload.message,
+        message: 'Loading....',
       };
     case 'LOADING':
       return {

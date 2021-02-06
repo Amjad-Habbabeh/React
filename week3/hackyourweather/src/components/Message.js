@@ -1,11 +1,6 @@
 import React, { useEffect } from 'react';
 
-function Message({ message, closeMessage }) {
-  useEffect(() => {
-    setTimeout(() => {
-      closeMessage();
-    }, 3000);
-  });
+function Message({ message }) {
   return (
     <div>
       <p>{message}</p>
@@ -14,3 +9,19 @@ function Message({ message, closeMessage }) {
 }
 
 export default Message;
+// import React, { useEffect } from 'react';
+
+// function Message({ message, closeMessage }) {
+//   useEffect(() => {
+//     setTimeout(() => {
+//       closeMessage();
+//     }, 3000);
+//   });
+//   return (
+//     <div>
+//       <p>{message}</p>
+//     </div>
+//   );
+// }
+
+// export default Message;

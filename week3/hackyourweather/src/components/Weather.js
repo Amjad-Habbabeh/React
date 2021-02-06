@@ -1,4 +1,4 @@
-import React, { useState, useReducer } from 'react';
+import React, { useState, useReducer, useEffect } from 'react';
 import CityWeather from './CityWeather';
 import Search from './Search';
 import Message from './Message';
@@ -7,8 +7,8 @@ import { reducer } from '../reducer';
 const defaultState = {
   isLoading: false,
   hasError: false,
-  hasMessage: true,
-  message: ``,
+  hasMessage: false,
+  message: `No city input yet, type in a city and click search!`,
   search: false,
   searchedCities: [],
 };
@@ -18,7 +18,13 @@ const Weather = () => {
   const Api_key = process.env.REACT_APP_OPENWEATHERMAP_API_KEY;
 
   const fetchData = (url) => {
-    dispatch({ type: 'LOADING', payload: true });
+    dispatch({
+      type: 'LOADING',
+      payload: {
+        isLoading: true,
+        hasMessage: true,
+      },
+    });
 
     fetch(url)
       .then((res) => {
@@ -36,6 +42,7 @@ const Weather = () => {
         return res.json();
       })
       .then((data) => {
+        closeMessage();
         dispatch({
           type: 'FETCH_DATA',
           payload: {
@@ -67,7 +74,10 @@ const Weather = () => {
   https://api.openweathermap.org/data/2.5/weather?q=${value}&appid=${Api_key}&units=metric `;
 
     e.preventDefault();
-    dispatch({ type: 'LOADING', payload: true });
+    dispatch({
+      type: 'LOADING',
+      payload: { isLoading: true, hasMessage: true },
+    });
 
     if (value) {
       if (state.searchedCities.length > 0) {
@@ -88,6 +98,7 @@ const Weather = () => {
             },
           });
           setCityName('');
+          closeMessage();
         }
       } else {
         fetchData(url);
@@ -104,6 +115,7 @@ const Weather = () => {
           hasMessage: true,
         },
       });
+      closeMessage();
     } else {
       dispatch({
         type: 'NO_VALUE',
@@ -116,16 +128,19 @@ const Weather = () => {
           searchedCities: [...state.searchedCities],
         },
       });
+      closeMessage();
     }
   };
 
   const closeMessage = () => {
-    dispatch({
-      type: 'CLOSE_MESSAGE',
-      payload: {
-        hasMessage: false,
-      },
-    });
+    setTimeout(() => {
+      dispatch({
+        type: 'CLOSE_MESSAGE',
+        payload: {
+          hasMessage: false,
+        },
+      });
+    }, 500);
   };
 
   const handleDelete = (id) => {
@@ -140,43 +155,46 @@ const Weather = () => {
         hasMessage: true,
       },
     });
+    closeMessage();
   };
+  // useEffect(() => {
+  //   if (state.hasMessage) {
+  //     setTimeout(() => {
+  //       closeMessage();
+  //     }, 1000);
+  //   }
+  // });
 
   return (
     <>
       <div className="container">
         <div className="weather">
           <h1>Weather</h1>
-          {state.hasMessage && (
-            <Message message={state.message} closeMessage={closeMessage} />
-          )}
+          {state.hasMessage && <Message message={state.message} />}
           <Search
             handleSearch={handleSearch}
             cityName={cityName}
             setCityName={setCityName}
           />
-
           {!state.search && state.searchedCities.length === 0 && (
             <Message
               message={`No city input yet, type in a city and click search!`}
-              closeMessage={closeMessage}
             />
           )}
-          {state.searchedCities &&
-            state.searchedCities.map((city) => {
-              return (
-                <CityWeather
-                  id={city.id}
-                  key={city.id}
-                  name={city.name}
-                  coord={city.coord}
-                  sys={city.sys}
-                  main={city.main}
-                  weather={city.weather}
-                  handleClick={() => handleDelete(city.id)}
-                />
-              );
-            })}
+          {state.searchedCities.map((city) => {
+            return (
+              <CityWeather
+                id={city.id}
+                key={city.id}
+                name={city.name}
+                coord={city.coord}
+                sys={city.sys}
+                main={city.main}
+                weather={city.weather}
+                handleDelete={() => handleDelete(city.id)}
+              />
+            );
+          })}
         </div>
       </div>
     </>

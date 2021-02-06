@@ -1,7 +1,7 @@
 import React from 'react';
 import { TiDeleteOutline } from 'react-icons/ti';
 
-const CityWeather = ({ name, coord, sys, main, weather, handleClick, id }) => {
+const CityWeather = ({ name, coord, sys, main, weather, handleDelete, id }) => {
   return (
     <div className="cityInfo" id={id}>
       <div className="city-weather">
@@ -10,7 +10,7 @@ const CityWeather = ({ name, coord, sys, main, weather, handleClick, id }) => {
             {name}, {sys.country}
           </h2>
 
-          <button className="remove-btn" onClick={handleClick}>
+          <button className="remove-btn" onClick={handleDelete}>
             <TiDeleteOutline className="delete" />
           </button>
         </div>
