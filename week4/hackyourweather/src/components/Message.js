@@ -1,11 +1,6 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 
-function Message({ message, closeMessage }) {
-  useEffect(() => {
-    setTimeout(() => {
-      closeMessage();
-    }, 3000);
-  });
+function Message({ message }) {
   return (
     <div>
       <p>{message}</p>

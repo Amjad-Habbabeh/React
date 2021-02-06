@@ -8,8 +8,8 @@ import { AppContext } from '../Context/App_context';
 const defaultState = {
   isLoading: false,
   hasError: false,
-  hasMessage: true,
-  message: ``,
+  hasMessage: false,
+  message: `No city input yet, type in a city and click search!`,
   search: false,
 };
 const Weather = () => {
@@ -23,7 +23,13 @@ const Weather = () => {
   }, []);
 
   const fetchData = (url) => {
-    dispatch({ type: 'LOADING', payload: true });
+    dispatch({
+      type: 'LOADING',
+      payload: {
+        isLoading: true,
+        hasMessage: true,
+      },
+    });
 
     fetch(url, { signal: abortControler.signal })
       .then((res) => {
@@ -41,6 +47,7 @@ const Weather = () => {
         return res.json();
       })
       .then((data) => {
+        closeMessage();
         setFetchCities([data, ...fetchCities]);
         dispatch({
           type: 'FETCH_DATA',
@@ -68,6 +75,7 @@ const Weather = () => {
             hasMessage: true,
           },
         });
+        closeMessage();
       });
   };
 
@@ -76,7 +84,10 @@ const Weather = () => {
   https://api.openweathermap.org/data/2.5/weather?q=${value}&appid=${Api_key}&units=metric `;
 
     e.preventDefault();
-    dispatch({ type: 'LOADING', payload: true });
+    dispatch({
+      type: 'LOADING',
+      payload: { isLoading: true, hasMessage: true },
+    });
 
     if (value) {
       if (fetchCities.length > 0) {
@@ -96,6 +107,7 @@ const Weather = () => {
             },
           });
           setCityName('');
+          closeMessage();
         }
       } else {
         fetchData(url);
@@ -111,6 +123,7 @@ const Weather = () => {
           hasMessage: true,
         },
       });
+      closeMessage();
     } else {
       dispatch({
         type: 'NO_VALUE',
@@ -122,16 +135,19 @@ const Weather = () => {
           search: false,
         },
       });
+      closeMessage();
     }
   };
 
   const closeMessage = () => {
-    dispatch({
-      type: 'CLOSE_MESSAGE',
-      payload: {
-        hasMessage: false,
-      },
-    });
+    setTimeout(() => {
+      dispatch({
+        type: 'CLOSE_MESSAGE',
+        payload: {
+          hasMessage: false,
+        },
+      });
+    }, 500);
   };
 
   const handleDelete = (id) => {
@@ -146,6 +162,7 @@ const Weather = () => {
         hasMessage: true,
       },
     });
+    closeMessage();
   };
 
   return (
@@ -153,9 +170,7 @@ const Weather = () => {
       <div className="container">
         <div className="weather">
           <h1>Weather</h1>
-          {state.hasMessage && (
-            <Message message={state.message} closeMessage={closeMessage} />
-          )}
+          {state.hasMessage && <Message message={state.message} />}
           <Search
             handleSearch={handlesearch}
             cityName={cityName}
@@ -165,7 +180,6 @@ const Weather = () => {
           {fetchCities.length === 0 && (
             <Message
               message={`No city input yet, type in a city and click search!`}
-              closeMessage={closeMessage}
             />
           )}
           {fetchCities.length !== 0 &&

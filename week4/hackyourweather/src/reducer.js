@@ -12,7 +12,7 @@ export const reducer = (state, action) => {
       return {
         ...state,
         isLoading: action.payload.isLoading,
-        message: action.payload.message,
+        message: 'Loading...',
         hasMessage: action.payload.hasMessage,
       };
     case 'ERROR':
