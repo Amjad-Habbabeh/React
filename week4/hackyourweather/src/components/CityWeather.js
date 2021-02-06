@@ -2,7 +2,7 @@ import React from 'react';
 import { TiDeleteOutline } from 'react-icons/ti';
 import { Link } from 'react-router-dom';
 
-const CityWeather = ({ name, coord, sys, main, weather, handleClick, id }) => {
+const CityWeather = ({ name, coord, sys, main, weather, handleDelete, id }) => {
   return (
     <div className="cityInfo" id={id}>
       <div className="city-weather">
@@ -11,7 +11,7 @@ const CityWeather = ({ name, coord, sys, main, weather, handleClick, id }) => {
             {name}, {sys.country}
           </Link>
 
-          <button className="remove-btn" onClick={handleClick}>
+          <button className="remove-btn" onClick={handleDelete}>
             <TiDeleteOutline className="delete" />
           </button>
         </div>

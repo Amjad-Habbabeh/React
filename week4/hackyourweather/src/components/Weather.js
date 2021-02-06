@@ -179,7 +179,7 @@ const Weather = () => {
                   sys={city.sys}
                   main={city.main}
                   weather={city.weather}
-                  handleClick={() => handleDelete(city.id)}
+                  handleDelete={() => handleDelete(city.id)}
                 />
               );
             })}
