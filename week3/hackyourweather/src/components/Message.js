@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 
 function Message({ message }) {
   return (
@@ -9,19 +9,3 @@ function Message({ message }) {
 }
 
 export default Message;
-// import React, { useEffect } from 'react';
-
-// function Message({ message, closeMessage }) {
-//   useEffect(() => {
-//     setTimeout(() => {
-//       closeMessage();
-//     }, 3000);
-//   });
-//   return (
-//     <div>
-//       <p>{message}</p>
-//     </div>
-//   );
-// }
-
-// export default Message;
