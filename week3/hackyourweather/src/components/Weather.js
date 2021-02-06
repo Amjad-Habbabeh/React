@@ -157,13 +157,6 @@ const Weather = () => {
     });
     closeMessage();
   };
-  // useEffect(() => {
-  //   if (state.hasMessage) {
-  //     setTimeout(() => {
-  //       closeMessage();
-  //     }, 1000);
-  //   }
-  // });
 
   return (
     <>
