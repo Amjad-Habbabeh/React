@@ -10,10 +10,7 @@ const City = () => {
   const url = `
   https://api.openweathermap.org/data/2.5/forecast?id=${cityId}&appid=${Api_key}&units=metric
   `;
-  // `
-  // https://history.openweathermap.org/data/2.5/aggregated/year?id=${cityId}&appid=${Api_key}&units	=metric
 
-  //
   const [cityName, setCityName] = useState('');
   const [cityData, setCityData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
