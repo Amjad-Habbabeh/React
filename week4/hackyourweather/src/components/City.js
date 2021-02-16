@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Link, useParams } from 'react-router-dom';
 import Chart from './Chart';
+import { useFetch } from './hooks/useFetch';
 
 const City = () => {
   const { id } = useParams();
@@ -11,46 +12,13 @@ const City = () => {
   https://api.openweathermap.org/data/2.5/forecast?id=${cityId}&appid=${Api_key}&units=metric
   `;
 
-  const [cityName, setCityName] = useState('');
-  const [cityData, setCityData] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isError, setIsError] = useState(false);
-
-  const fetchApi = (abort) => {
-    fetch(url, { signal: abort.signal })
-      .then((res) => {
-        setIsLoading(true);
-        if (!res.ok) {
-          throw Error('failed to fetch ');
-        }
-        return res.json();
-      })
-      .then((data) => {
-        setCityData(data.list);
-        const cityName = data.city.name;
-        setCityName(cityName);
-        setIsLoading(false);
-        setIsError(false);
-      })
-      .catch((err) => {
-        if (err.name === 'AbortError') {
-          return console.log('fetch aborted');
-        }
-        console.log(err);
-        setIsError(true);
-      });
-  };
-  useEffect(() => {
-    const abortControler = new AbortController();
-    fetchApi(abortControler);
-
-    return () => abortControler.abort();
-  }, []);
+  const [isLoading, fetchedData, hasError] = useFetch(url, [url]);
+  const city = fetchedData?.city;
+  const list = fetchedData?.list;
   let fiveDaysWeather = [];
-
-  if (cityData.length > 0) {
-    for (let i = 0; i < cityData.length; i = i + 8) {
-      fiveDaysWeather.push(cityData[i]);
+  if (list) {
+    for (let i = 0; i < list.length; i = i + 8) {
+      fiveDaysWeather.push(list[i]);
     }
   }
 
@@ -58,15 +26,15 @@ const City = () => {
     <div>
       <h1>5 day Forecast</h1>
       {isLoading && <p>Loading...</p>}
-      {isError && (
+      {hasError && (
         <p>
-          Sorry! failed to fetch the wither history for {cityName} ..please try
+          Sorry! failed to fetch the wither history for {city.name} ..please try
           agine later!
         </p>
       )}
-      {!isError && fiveDaysWeather.length === 5 && (
+      {!hasError && fiveDaysWeather.length === 5 && (
         <div>
-          <h2>{cityName}</h2>
+          <h2>{city.name}</h2>
           <Chart fiveDaysWeather={fiveDaysWeather} />
         </div>
       )}

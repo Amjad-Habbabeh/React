@@ -6,11 +6,10 @@ export const useFetch = (url, deps) => {
   const [hasError, setHasError] = useState(false);
 
   useEffect(() => {
-    const aboatcont = new AbortController();
+    const abortController = new AbortController();
 
     setIsLoading(true);
-    console.log('sending http request...');
-    fetch(url, { signal: aboatcont.signal })
+    fetch(url, { signal: abortController.signal })
       .then((res) => {
         if (!res.ok) {
           setIsLoading(false);
@@ -25,14 +24,15 @@ export const useFetch = (url, deps) => {
       })
       .catch((err) => {
         if (err.name === 'AbortError') {
-          console.log('fetch aborted');
         } else {
           setHasError(true);
           setIsLoading(false);
         }
       });
-    return () => aboatcont.abort();
-  }, [deps]);
+    return () => {
+      return abortController.abort();
+    };
+  }, deps);
 
   return [isLoading, fetchedData, hasError];
 };

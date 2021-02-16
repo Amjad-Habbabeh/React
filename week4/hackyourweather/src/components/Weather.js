@@ -1,166 +1,126 @@
-import React, { useState, useReducer, useContext, useEffect } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import CityWeather from './CityWeather';
 import Search from './Search';
 import Message from './Message';
-import { reducer } from '../reducer';
 import { AppContext } from '../Context/App_context';
+import { useFetch } from './hooks/useFetch';
 
 const defaultState = {
-  isLoading: false,
-  hasError: false,
   hasMessage: false,
+  hasError: false,
   message: `No city input yet, type in a city and click search!`,
   search: false,
 };
 const Weather = () => {
-  const [cityName, setCityName] = useState('');
   const { fetchCities, setFetchCities } = useContext(AppContext);
-  const [state, dispatch] = useReducer(reducer, defaultState);
+  const [cityName, setCityName] = useState('');
+  const [newUrl, setNewUrl] = useState(null);
+  const [fetching, setFetching] = useState(false);
+  const [isLoading, fetchedData, hasError] = useFetch(newUrl, [newUrl]);
+  const [state, setState] = useState(defaultState);
   const Api_key = process.env.REACT_APP_OPENWEATHERMAP_API_KEY;
-  const abortControler = new AbortController();
+
   useEffect(() => {
-    return () => abortControler.abort();
-  }, []);
-
-  const fetchData = (url) => {
-    dispatch({
-      type: 'LOADING',
-      payload: {
-        isLoading: true,
-        hasMessage: true,
-      },
-    });
-
-    fetch(url, { signal: abortControler.signal })
-      .then((res) => {
-        if (!res.ok) {
-          dispatch({
-            type: 'LOADING',
-            payload: {
-              isLoading: false,
-              hasMessage: true,
-            },
-          });
-
-          throw new Error('Failed to fetch..');
-        }
-        return res.json();
-      })
-      .then((data) => {
-        closeMessage();
-        setFetchCities([data, ...fetchCities]);
-        dispatch({
-          type: 'FETCH_DATA',
-          payload: {
-            data: data,
-            search: true,
-            isLoading: false,
-            hasMessage: true,
-            message: `${cityName} weather added!`,
-          },
-        });
-
-        setCityName('');
-      })
-      .catch((err) => {
-        if (err.name === 'AbortError') {
-          return console.log('fetch aborted');
-        }
-        dispatch({
-          type: 'ERROR',
-          payload: {
-            isLoading: false,
-            hasError: true,
-            message: `we couldn't find ${cityName} `,
-            hasMessage: true,
-          },
-        });
-        closeMessage();
+    if (fetching && fetchedData) {
+      setFetchCities([fetchedData, ...fetchCities]);
+      setState({
+        ...state,
+        search: true,
+        message: `${cityName} weather added!`,
       });
-  };
+    }
+    setFetching(false);
+  }, [fetchedData, setCityName]);
+  useEffect(() => {
+    if (hasError && newUrl) {
+      setState({
+        ...state,
+        hasError: true,
+        hasMessage: true,
+        message: `failed to fetch this city's weather!`,
+      });
+      closeMessage();
+    }
+  }, [newUrl, hasError, state.search, setCityName]);
 
   const handlesearch = (e, value) => {
     const url = `
   https://api.openweathermap.org/data/2.5/weather?q=${value}&appid=${Api_key}&units=metric `;
 
     e.preventDefault();
-    dispatch({
-      type: 'LOADING',
-      payload: { isLoading: true, hasMessage: true },
-    });
-
+    setState({ ...state, search: true });
     if (value) {
       if (fetchCities.length > 0) {
         const existCity = fetchCities.filter(
           (city) => city.name.toUpperCase() === value.toUpperCase()
         );
         if (!existCity[0]) {
-          fetchData(url);
-          setCityName('');
-        } else {
-          dispatch({
-            type: 'EXIST_CITY',
-            payload: {
-              isLoading: false,
-              message: `City information already here `,
-              hasMessage: true,
-            },
+          setFetching(true);
+          setNewUrl(url);
+          setState({
+            ...state,
+            search: true,
+            hasMessage: true,
+            message: `city weather added!`,
           });
-          setCityName('');
+          closeMessage();
+        } else {
+          setState({
+            ...state,
+            message: `City information already here `,
+            hasMessage: true,
+          });
           closeMessage();
         }
       } else {
-        fetchData(url);
-        setCityName('');
+        setFetching(true);
+        setNewUrl(url);
+        setState({
+          ...state,
+          search: true,
+          hasMessage: true,
+          message: `city weather added!`,
+        });
+        closeMessage();
       }
     } else if (!value && fetchCities.length > 0) {
-      dispatch({
-        type: 'NO_VALUE',
-        payload: {
-          isLoading: false,
-          search: true,
-          message: `Please, inter a value`,
-          hasMessage: true,
-        },
+      setState({
+        ...state,
+        search: true,
+        message: `Please, inter a value`,
+        hasMessage: true,
       });
       closeMessage();
     } else {
-      dispatch({
-        type: 'NO_VALUE',
-        payload: {
-          isLoading: false,
-          hasError: false,
-          hasMessage: true,
-          message: `No city input yet, type in a city and click search!`,
-          search: false,
-        },
+      setState({
+        ...state,
+        hasError: false,
+        hasMessage: true,
+        message: `No city input yet, type in a city and click search!`,
+        search: false,
       });
+
       closeMessage();
     }
   };
 
   const closeMessage = () => {
     setTimeout(() => {
-      dispatch({
-        type: 'CLOSE_MESSAGE',
-        payload: {
-          hasMessage: false,
-        },
-      });
-    }, 500);
+      setState({ ...state, hasMessage: false, hasError: false });
+    }, 1000);
+    setCityName('');
   };
 
   const handleDelete = (id) => {
     const deletedCity = fetchCities.filter((city) => city.id === id);
     const newCities = fetchCities.filter((city) => city.id !== id);
     setFetchCities(newCities);
-    dispatch({
-      type: 'DELETE',
-      payload: {
-        search: false,
-        message: `${deletedCity[0].name} weather information deleted`,
-        hasMessage: true,
-      },
+
+    setState({
+      ...state,
+      search: false,
+      message: `${deletedCity[0].name} weather information deleted`,
+      hasMessage: true,
     });
     closeMessage();
   };
@@ -170,7 +130,10 @@ const Weather = () => {
       <div className="container">
         <div className="weather">
           <h1>Weather</h1>
-          {state.hasMessage && <Message message={state.message} />}
+          {isLoading && <Message message={`Loading...`} />}
+          {state.hasMessage && !isLoading && (
+            <Message message={state.message} />
+          )}
           <Search
             handleSearch={handlesearch}
             cityName={cityName}
